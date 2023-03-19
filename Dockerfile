@@ -7,6 +7,10 @@ ENV GO111MODULE=on \
 
 WORKDIR /build
 
+RUN apk update && apk upgrade && apk add --no-cache ca-certificates
+RUN update-ca-certificates
+
+
 COPY . .
 
 RUN go mod download
@@ -22,5 +26,7 @@ FROM scratch
 
 COPY --from=builder /dist/main .
 COPY --from=builder /dist/.env .
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
 
 ENTRYPOINT ["/main"]
