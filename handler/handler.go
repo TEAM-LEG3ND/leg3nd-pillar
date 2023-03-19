@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"leg3nd-pillar/auth"
 	"leg3nd-pillar/model"
@@ -15,11 +16,11 @@ func Auth(ctx *fiber.Ctx) error {
 func Callback(ctx *fiber.Ctx) error {
 	token, err := auth.GetGoogleOAuthToken(ctx, ctx.FormValue("code"))
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 	user, err := auth.GetGoogleOAuthUser(token)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 	return ctx.Status(200).JSON(user)
 }
@@ -28,15 +29,15 @@ func CallbackJson(ctx *fiber.Ctx) error {
 	var req *model.GoogleOAuthUserRequest
 	err := ctx.BodyParser(&req)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 	token, err := auth.GetGoogleOAuthToken(ctx, req.Code)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 	user, err := auth.GetGoogleOAuthUser(token)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 	return ctx.Status(200).JSON(user)
 }
