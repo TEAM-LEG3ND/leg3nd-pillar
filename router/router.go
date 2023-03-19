@@ -7,8 +7,7 @@ import (
 )
 
 func Routes(app *fiber.App, corsConfig fiber.Handler) {
-	api := app.Group("/api", logger.New())
-	api.Use(corsConfig)
+	api := app.Group("/api", logger.New(), corsConfig)
 	api.Get("", handler.Auth)
 	api.Get("/ping", handler.Pong)
 	api.Post("/google", handler.CallbackJson)
