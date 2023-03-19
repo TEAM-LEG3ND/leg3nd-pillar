@@ -11,3 +11,7 @@ type GoogleResponse struct {
 	FamilyName    string `json:"family_name"`
 	Locale        string `json:"locale"`
 }
+
+type GoogleOAuthUserRequest struct {
+	Code string `json:"code"`
+}
