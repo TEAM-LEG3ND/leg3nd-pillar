@@ -20,8 +20,6 @@ func ConfigGoogle() *oauth2.Config {
 		Endpoint: google.Endpoint,
 	}
 
-	fmt.Println(google.Endpoint)
-
 	return conf
 }
 

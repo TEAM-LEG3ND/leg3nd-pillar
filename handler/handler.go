@@ -22,3 +22,7 @@ func Callback(ctx *fiber.Ctx) error {
 	}
 	return ctx.Status(200).JSON(user)
 }
+
+func Pong(ctx *fiber.Ctx) error {
+	return ctx.Status(200).SendString("pong")
+}
