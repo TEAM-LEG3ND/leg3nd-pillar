@@ -13,18 +13,6 @@ func Auth(ctx *fiber.Ctx) error {
 	return ctx.Redirect(url)
 }
 
-func Callback(ctx *fiber.Ctx) error {
-	token, err := auth.GetGoogleOAuthToken(ctx, ctx.FormValue("code"))
-	if err != nil {
-		fmt.Println(err)
-	}
-	user, err := auth.GetGoogleOAuthUser(token)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return ctx.Status(200).JSON(user)
-}
-
 func CallbackJson(ctx *fiber.Ctx) error {
 	var req *model.GoogleOAuthUserRequest
 	err := ctx.BodyParser(&req)

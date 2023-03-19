@@ -24,7 +24,6 @@ func ConfigGoogle() *oauth2.Config {
 }
 
 func GetGoogleOAuthToken(ctx *fiber.Ctx, code string) (*oauth2.Token, error) {
-	fmt.Println(code)
 	token, err := ConfigGoogle().Exchange(ctx.Context(), code)
 	if err != nil {
 		return nil, err
