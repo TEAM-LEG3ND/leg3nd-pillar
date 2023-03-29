@@ -17,6 +17,7 @@ jobs:
           echo "GOOGLE_REDIRECT_URL=${{ vars.GOOGLE_REDIRECT_URL }}" >> ./.env
           pwd
           ls -al
+          ls -al ../
           cat ./.env
       -
         name: Set up QEMU
