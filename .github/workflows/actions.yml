@@ -16,6 +16,7 @@ jobs:
           echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> ./.env
           echo "GOOGLE_REDIRECT_URL=${{ vars.GOOGLE_REDIRECT_URL }}" >> ./.env
           pwd
+          ls -al
           cat ./.env
       -
         name: Set up QEMU
