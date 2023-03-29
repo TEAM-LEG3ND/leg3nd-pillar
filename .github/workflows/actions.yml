@@ -38,6 +38,7 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v4
         with:
+          context: .
           push: true
           platforms: linux/arm64
           tags: ${{ secrets.REGISTRY_HOST }}/leg3nd-pillar:latest
