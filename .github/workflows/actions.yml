@@ -17,10 +17,6 @@ jobs:
           echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> ./.env
           echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> ./.env
           echo "GOOGLE_REDIRECT_URL=${{ vars.GOOGLE_REDIRECT_URL }}" >> ./.env
-          pwd
-          ls -al
-          ls -al ../
-          cat ./.env
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v2
