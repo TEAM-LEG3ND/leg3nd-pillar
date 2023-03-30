@@ -4,12 +4,12 @@
   remote_user: "{{ user }}"
   become_user: "{{ user }}"
   tasks:
-    - name: Login to Private Registry
-      become: True
-      shell: /usr/local/bin/docker login {{ registry_host }} -u {{ registry_user }} -p {{ registry_password }}
-      args:
-        chdir: /Users/{{ user }}/Server
-        executable: /bin/zsh
+    - name: Log into private registry and force re-authorization
+      docker_login:
+        registry: {{ registry_host }}
+        username: {{ registry_user }}
+        password: {{ registry_password }}
+        reauthorize: yes
     - name: Pull Docker Image
       become: True
       shell: /usr/local/bin/docker compose pull leg3nd-pillar
