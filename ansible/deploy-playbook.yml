@@ -1,7 +1,7 @@
 - hosts: all
   vars_files:
     - /ansible/secrets.yml
-  remote_user: {{ user }}
+  remote_user: "{{ user }}"
   tasks:
     - name: Pull Docker Image
       shell: docker compose pull leg3nd-pillar
