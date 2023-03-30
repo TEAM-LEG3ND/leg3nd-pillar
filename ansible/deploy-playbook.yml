@@ -2,6 +2,7 @@
   vars_files:
     - secrets.yml
   remote_user: "{{ user }}"
+  become_user: "{{ user }}"
   tasks:
     - name: Pull Docker Image
       become: True
