@@ -38,3 +38,14 @@ jobs:
           push: true
           platforms: linux/arm64
           tags: ${{ secrets.REGISTRY_HOST }}/leg3nd-pillar:latest
+  docker-pull-and-restart:
+    environment: dev
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Playbook
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          playbook: deploy-playbook.yml
+          directory: ./ansible
+          key: ${{secrets.SSH_PRIVATE_KEY}}
+          inventory: ${{secrets.ANSIBLE_INVENTORY}}

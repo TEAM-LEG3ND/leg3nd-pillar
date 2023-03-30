@@ -1,0 +1,15 @@
+- hosts: all
+  vars_files:
+    - /ansible/secrets.yml
+  remote_user: {{ user }}
+  tasks:
+    - name: Pull Docker Image
+      shell: docker compose pull leg3nd-pillar
+      args:
+        chdir: /Users/{{ user }}/Server/volumes/mysql/data:/var/lib/mysql
+        executable: /bin/zsh
+    - name: Restart Container
+      shell: docker compose up -d leg3nd-pillar --force-recreate
+      args:
+        chdir: /Users/{{ user }}/Server/volumes/mysql/data:/var/lib/mysql
+        executable: /bin/zsh
