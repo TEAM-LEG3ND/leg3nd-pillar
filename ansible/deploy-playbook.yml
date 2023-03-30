@@ -4,12 +4,14 @@
   remote_user: "{{ user }}"
   tasks:
     - name: Pull Docker Image
-      shell: /usr/local/bin/docker compose pull leg3nd-pillar
+      become: True
+      shell: docker compose pull leg3nd-pillar
       args:
         chdir: /Users/{{ user }}/Server
         executable: /bin/zsh
     - name: Restart Container
-      shell: /usr/local/bin/docker compose up -d leg3nd-pillar --force-recreate
+      become: True
+      shell: docker compose up -d leg3nd-pillar --force-recreate
       args:
         chdir: /Users/{{ user }}/Server
         executable: /bin/zsh
