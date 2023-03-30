@@ -6,7 +6,7 @@
   tasks:
     - name: Login to Private Registry
       become: True
-      shell: /usr/local/bin/docker login {{ registry_host }} -u {{ registry_user ]} -p '{{ registry_password }}'
+      shell: /usr/local/bin/docker login {{ registry_host }} -u {{ registry_user ]} -p {{ registry_password }}
     - name: Pull Docker Image
       become: True
       shell: /usr/local/bin/docker compose pull leg3nd-pillar
