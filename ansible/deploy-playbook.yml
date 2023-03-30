@@ -1,6 +1,6 @@
 - hosts: all
   vars_files:
-    - /ansible/secrets.yml
+    - secrets.yml
   remote_user: "{{ user }}"
   tasks:
     - name: Pull Docker Image
