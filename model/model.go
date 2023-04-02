@@ -15,3 +15,15 @@ type GoogleResponse struct {
 type GoogleOAuthUserRequest struct {
 	Code string `json:"code"`
 }
+
+type AccountResponse struct {
+	Id            int64  `json:"id"`
+	Email         string `json:"email"`
+	Nickname      string `json:"nickname"`
+	FullName      string `json:"full_name"`
+	OAuthProvider string `json:"o_auth_provider"`
+}
+
+type NewAccountResponse struct {
+	Id int64 `json:"id"`
+}
