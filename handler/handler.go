@@ -27,7 +27,17 @@ func CallbackJson(ctx *fiber.Ctx) error {
 	if err != nil {
 		fmt.Println(err)
 	}
-	return ctx.Status(200).JSON(user)
+
+	ac, err := auth.FindAccountByEmail(user)
+	if err != nil {
+		id, err := auth.CreateAccount(user)
+		if err != nil {
+			return fmt.Errorf("error occurred when creating account not existed: %v", err)
+		}
+		ac, err = auth.FindAccountById(*id)
+	}
+
+	return ctx.Status(200).JSON(ac)
 }
 
 func Pong(ctx *fiber.Ctx) error {
