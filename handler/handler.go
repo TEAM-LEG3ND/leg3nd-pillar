@@ -5,6 +5,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"leg3nd-pillar/auth"
 	"leg3nd-pillar/model"
+	"log"
 )
 
 func Auth(ctx *fiber.Ctx) error {
@@ -32,9 +33,14 @@ func CallbackJson(ctx *fiber.Ctx) error {
 	if err != nil {
 		id, err := auth.CreateAccount(user)
 		if err != nil {
+			log.Printf("error occurred when creating account not existed: %v", err)
 			return fmt.Errorf("error occurred when creating account not existed: %v", err)
 		}
 		ac, err = auth.FindAccountById(*id)
+		if err != nil {
+			log.Printf("error occurred when find account by id after creation: %v", err)
+			return fmt.Errorf("error occurred when find account by id after creation: %v", err)
+		}
 	}
 
 	return ctx.Status(200).JSON(ac)
