@@ -16,7 +16,7 @@ jobs:
           touch ./.env
           echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> ./.env
           echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> ./.env
-          echo "ACCOUNT_HOST=${{ vars.ACCOUNT_HOST }}" >> ./.env
+          echo "ACCOUNT_HOST=${{ secrets.ACCOUNT_HOST }}" >> ./.env
           echo "GOOGLE_REDIRECT_URL=${{ vars.GOOGLE_REDIRECT_URL }}" >> ./.env
       -
         name: Set up QEMU
