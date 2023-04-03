@@ -31,6 +31,7 @@ func CallbackJson(ctx *fiber.Ctx) error {
 
 	ac, err := auth.FindAccountByEmail(user)
 	if err != nil {
+		log.Printf("first error on FindAccountByEmail but do not matter maybe: %v", err)
 		id, err := auth.CreateAccount(user)
 		if err != nil {
 			log.Printf("error occurred when creating account not existed: %v", err)
