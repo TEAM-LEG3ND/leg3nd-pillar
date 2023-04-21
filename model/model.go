@@ -27,3 +27,17 @@ type AccountResponse struct {
 type NewAccountResponse struct {
 	Id int64 `json:"id"`
 }
+
+type ErrorCode string
+
+const (
+	NewUser     = ErrorCode("NEW_USER")
+	LoginFailed = ErrorCode("LOGIN_FAILED")
+)
+
+type FindAccountByEmailFailedResponse struct {
+	Code             ErrorCode `json:"error_code"`
+	Message          string    `json:"string"`
+	OAuthAccessToken string    `json:"o_auth_access_token"`
+	OAuthProvider    string    `json:"o_auth_provider"`
+}
