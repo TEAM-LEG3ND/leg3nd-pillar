@@ -37,7 +37,7 @@ const (
 
 type FindAccountByEmailFailedResponse struct {
 	Code             ErrorCode     `json:"error_code"`
-	Message          string        `json:"string"`
+	Message          string        `json:"message"`
 	OAuthAccessToken string        `json:"o_auth_access_token"`
 	OAuthProvider    OAuthProvider `json:"o_auth_provider"`
 }
