@@ -89,6 +89,31 @@ func CreateAccount(googleResponse *model.GoogleResponse) (*int64, error) {
 	return &data.Id, nil
 }
 
+func CreateAccountV1(newAccountRequest *model.NewAccountRequest) (*int64, error) {
+	accountHost := config.Config("ACCOUNT_HOST")
+	a := fiber.AcquireAgent()
+	req := a.Request()
+	req.Header.SetMethod(fiber.MethodPost)
+	req.SetRequestURI(accountHost + "/v1")
+	a.JSON(newAccountRequest)
+	if err := a.Parse(); err != nil {
+		return nil, err
+	}
+	var statusCode int
+	var resultBody []byte
+	var errs []error
+	var data *model.NewAccountResponse
+
+	if statusCode, resultBody, errs = a.Struct(&data); len(errs) > 0 {
+		err := fmt.Errorf("CreateAccount failed: %v", errs)
+		return nil, err
+	}
+
+	log.Printf("CreateAccount: received : %v %v", statusCode, string(resultBody))
+
+	return &data.Id, nil
+}
+
 func FindAccountById(id int64) (*model.AccountResponse, error) {
 	accountHost := config.Config("ACCOUNT_HOST")
 	a := fiber.AcquireAgent()
