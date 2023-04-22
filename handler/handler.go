@@ -88,6 +88,26 @@ func Login(ctx *fiber.Ctx) error {
 	return ctx.Status(200).JSON(ac)
 }
 
+func CreateAccount(ctx *fiber.Ctx) error {
+	var req *model.NewAccountRequest
+	err := ctx.BodyParser(&req)
+	if err != nil {
+		return &fiber.Error{Code: fiber.StatusBadRequest, Message: "Invalid Request. Check your request body"}
+	}
+	id, err := auth.CreateAccountV1(req)
+	if err != nil {
+		log.Printf("error occurred when creating account not existed: %v", err)
+		return fmt.Errorf("error occurred when creating account not existed: %v", err)
+	}
+	ac, err := auth.FindAccountById(*id)
+	if err != nil {
+		log.Printf("error occurred when find account by id after creation: %v", err)
+		return fmt.Errorf("error occurred when find account by id after creation: %v", err)
+	}
+
+	return ctx.Status(fiber.StatusCreated).JSON(ac)
+}
+
 func Pong(ctx *fiber.Ctx) error {
 	return ctx.Status(200).SendString("pong")
 }
