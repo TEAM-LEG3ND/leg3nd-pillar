@@ -56,7 +56,7 @@ func Login(ctx *fiber.Ctx) error {
 
 		createdAccountId, err := auth.CreateAccount(newAccountRequest)
 
-		accessToken, err := auth.GetAccessToken(*createdAccountId, time.Minute*1)
+		accessToken, err := auth.GetAccessToken(*createdAccountId, time.Minute*30)
 		if err != nil {
 			log.Printf("error occurred on creating access token: %v", err)
 			return fmt.Errorf("error occurred on creating access token: %v", err)
