@@ -17,6 +17,10 @@ jobs:
           echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> ./.env
           echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> ./.env
           echo "ACCOUNT_HOST=${{ secrets.ACCOUNT_HOST }}" >> ./.env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> ./.env
+          echo "JWT_EXPIRES_MINUTE=${{ secrets.JWT_EXPIRES_MINUTE }}" >> ./.env
+          echo "JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }}" >> ./.env
+          echo "JWT_REFRESH_EXPIRES_MINUTE=${{ secrets.JWT_REFRESH_EXPIRES_MINUTE }}" >> ./.env
           echo "GOOGLE_REDIRECT_URL=${{ vars.GOOGLE_REDIRECT_URL }}" >> ./.env
       -
         name: Set up QEMU
