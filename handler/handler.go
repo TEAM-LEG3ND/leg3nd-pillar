@@ -5,6 +5,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
 	"leg3nd-pillar/auth"
+	"leg3nd-pillar/config"
 	"leg3nd-pillar/model"
 	"log"
 	"strconv"
@@ -71,12 +72,23 @@ func Login(ctx *fiber.Ctx) error {
 		})
 	}
 
-	accessToken, err := auth.GetAccessToken(ac.Id, time.Minute*30)
+	jwtExpiresMinute, err := strconv.ParseInt(config.Config("JWT_EXPIRES_MINUTE"), 10, 64)
+	if err != nil {
+		log.Printf("error occurred while parsing JWT expires")
+		return fmt.Errorf("error occurred while parsing JWT expires")
+	}
+	jwtRefreshExpiresMinute, err := strconv.ParseInt(config.Config("JWT_REFRESH_EXPIRES_MINUTE"), 10, 64)
+	if err != nil {
+		log.Printf("error occurred while parsing JWT refresh expires")
+		return fmt.Errorf("error occurred while parsing JWT refresh expires")
+	}
+
+	accessToken, err := auth.GetAccessToken(ac.Id, time.Minute*time.Duration(jwtExpiresMinute))
 	if err != nil {
 		log.Printf("error occurred on creating access token: %v", err)
 		return fmt.Errorf("error occurred on creating access token: %v", err)
 	}
-	refreshToken, err := auth.GetRefreshToken(ac.Id, time.Hour*24*30)
+	refreshToken, err := auth.GetRefreshToken(ac.Id, time.Minute*time.Duration(jwtRefreshExpiresMinute))
 	if err != nil {
 		log.Printf("error occurred on creating refresh token: %v", err)
 		return fmt.Errorf("error occurred on creating refresh token: %v", err)
