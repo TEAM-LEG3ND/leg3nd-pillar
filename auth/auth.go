@@ -3,12 +3,14 @@ package auth
 import (
 	"fmt"
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"leg3nd-pillar/config"
 	"leg3nd-pillar/model"
 	"log"
 	"strconv"
+	"time"
 )
 
 // ConfigGoogle returns oauth2 Config related to google from user dotenv file
@@ -161,4 +163,32 @@ func FindAccountByEmail(googleResponse *model.GoogleResponse) (*model.AccountRes
 	log.Printf("FindAccountByEmail: received : %v %v", statusCode, string(resultBody))
 
 	return data, nil
+}
+
+func GetAccessToken(id int64, duration time.Duration) (*string, error) {
+	claims := jwt.MapClaims{
+		"sub": strconv.FormatInt(id, 10),
+		"iat": time.Now().Unix(),
+		"exp": time.Now().Add(duration).Unix(),
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	t, err := token.SignedString([]byte(config.Config("JWT_SECRET")))
+	if err != nil {
+		return nil, fmt.Errorf("token generation failed, %w", err)
+	}
+	return &t, nil
+}
+
+func GetRefreshToken(id int64, duration time.Duration) (*string, error) {
+	claims := jwt.MapClaims{
+		"sub": strconv.FormatInt(id, 10),
+		"iat": time.Now().Unix(),
+		"exp": time.Now().Add(duration).Unix(),
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	t, err := token.SignedString([]byte(config.Config("JWT_REFRESH_SECRET")))
+	if err != nil {
+		return nil, fmt.Errorf("token generation failed, %w", err)
+	}
+	return &t, nil
 }
