@@ -28,6 +28,10 @@ type NewAccountResponse struct {
 	Id int64 `json:"id"`
 }
 
+type UpdatedAccountResponse struct {
+	Id int64 `json:"id"`
+}
+
 type ErrorCode string
 
 const (
@@ -36,10 +40,9 @@ const (
 )
 
 type FindAccountByEmailFailedResponse struct {
-	Code             ErrorCode     `json:"error_code"`
-	Message          string        `json:"string"`
-	OAuthAccessToken string        `json:"o_auth_access_token"`
-	OAuthProvider    OAuthProvider `json:"o_auth_provider"`
+	Code    ErrorCode     `json:"error_code"`
+	Message string        `json:"message"`
+	Token   TokenResponse `json:"token"`
 }
 
 type OAuthProvider string
@@ -53,9 +56,33 @@ func (oap OAuthProvider) String() string {
 	return string(oap)
 }
 
+type Status string
+
+const (
+	Draft     = Status("draft")
+	Ok        = Status("ok")
+	Suspended = Status("suspended")
+	Withdraw  = Status("withdraw")
+)
+
+func (s Status) String() string {
+	return string(s)
+}
+
 type NewAccountRequest struct {
 	Email         string        `json:"email"`
-	Nickname      string        `json:"nickname"`
 	FullName      string        `json:"full_name"`
 	OAuthProvider OAuthProvider `json:"o_auth_provider"`
+}
+
+type TokenResponse struct {
+	AccessToken *string `json:"access_token"`
+}
+
+type UpdateAccountRequestBody struct {
+	Email         *string        `json:"email"`
+	Nickname      *string        `json:"nickname"`
+	FullName      *string        `json:"full_name"`
+	OAuthProvider *OAuthProvider `json:"o_auth_provider"`
+	Status        *Status        `json:"status"`
 }

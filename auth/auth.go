@@ -3,12 +3,14 @@ package auth
 import (
 	"fmt"
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"leg3nd-pillar/config"
 	"leg3nd-pillar/model"
 	"log"
 	"strconv"
+	"time"
 )
 
 // ConfigGoogle returns oauth2 Config related to google from user dotenv file
@@ -62,34 +64,7 @@ func GetGoogleOAuthUser(token *oauth2.Token) (*model.GoogleResponse, error) {
 	return data, nil
 }
 
-func CreateAccount(googleResponse *model.GoogleResponse) (*int64, error) {
-	accountHost := config.Config("ACCOUNT_HOST")
-	email := googleResponse.Email
-	fullName := googleResponse.Name
-	a := fiber.AcquireAgent()
-	req := a.Request()
-	req.Header.SetMethod(fiber.MethodPost)
-	req.SetRequestURI(accountHost + "/v1")
-	a.JSON(fiber.Map{"email": email, "full_name": fullName, "o_auth_provider": "google"})
-	if err := a.Parse(); err != nil {
-		return nil, err
-	}
-	var statusCode int
-	var resultBody []byte
-	var errs []error
-	var data *model.NewAccountResponse
-
-	if statusCode, resultBody, errs = a.Struct(&data); len(errs) > 0 {
-		err := fmt.Errorf("CreateAccount failed: %v", errs)
-		return nil, err
-	}
-
-	log.Printf("CreateAccount: received : %v %v", statusCode, string(resultBody))
-
-	return &data.Id, nil
-}
-
-func CreateAccountV1(newAccountRequest *model.NewAccountRequest) (*int64, error) {
+func CreateAccount(newAccountRequest *model.NewAccountRequest) (*int64, error) {
 	accountHost := config.Config("ACCOUNT_HOST")
 	a := fiber.AcquireAgent()
 	req := a.Request()
@@ -110,6 +85,31 @@ func CreateAccountV1(newAccountRequest *model.NewAccountRequest) (*int64, error)
 	}
 
 	log.Printf("CreateAccount: received : %v %v", statusCode, string(resultBody))
+
+	return &data.Id, nil
+}
+
+func UpdateAccount(id int64, updateAccountRequestBody *model.UpdateAccountRequestBody) (*int64, error) {
+	accountHost := config.Config("ACCOUNT_HOST")
+	a := fiber.AcquireAgent()
+	req := a.Request()
+	req.Header.SetMethod(fiber.MethodPatch)
+	req.SetRequestURI(accountHost + "/v1/" + strconv.FormatInt(id, 10))
+	a.JSON(updateAccountRequestBody)
+	if err := a.Parse(); err != nil {
+		return nil, err
+	}
+	var statusCode int
+	var resultBody []byte
+	var errs []error
+	var data *model.UpdatedAccountResponse
+
+	if statusCode, resultBody, errs = a.Struct(&data); len(errs) > 0 {
+		err := fmt.Errorf("UpdateAccount failed: %v", errs)
+		return nil, err
+	}
+
+	log.Printf("UpdateAccount: received : %v %v", statusCode, string(resultBody))
 
 	return &data.Id, nil
 }
@@ -161,4 +161,32 @@ func FindAccountByEmail(googleResponse *model.GoogleResponse) (*model.AccountRes
 	log.Printf("FindAccountByEmail: received : %v %v", statusCode, string(resultBody))
 
 	return data, nil
+}
+
+func GetAccessToken(id int64, duration time.Duration) (*string, error) {
+	claims := jwt.MapClaims{
+		"sub": strconv.FormatInt(id, 10),
+		"iat": time.Now().Unix(),
+		"exp": time.Now().Add(duration).Unix(),
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	t, err := token.SignedString([]byte(config.Config("JWT_SECRET")))
+	if err != nil {
+		return nil, fmt.Errorf("token generation failed, %w", err)
+	}
+	return &t, nil
+}
+
+func GetRefreshToken(id int64, duration time.Duration) (*string, error) {
+	claims := jwt.MapClaims{
+		"sub": strconv.FormatInt(id, 10),
+		"iat": time.Now().Unix(),
+		"exp": time.Now().Add(duration).Unix(),
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	t, err := token.SignedString([]byte(config.Config("JWT_REFRESH_SECRET")))
+	if err != nil {
+		return nil, fmt.Errorf("token generation failed, %w", err)
+	}
+	return &t, nil
 }
