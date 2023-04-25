@@ -141,7 +141,46 @@ func UpdateAccount(ctx *fiber.Ctx) error {
 		return fmt.Errorf("error occurred while updating account by id: %v", err)
 	}
 
-	return ctx.SendStatus(fiber.StatusOK)
+	jwtExpiresMinute, err := strconv.ParseInt(config.Config("JWT_EXPIRES_MINUTE"), 10, 64)
+	if err != nil {
+		log.Printf("error occurred while parsing JWT expires")
+		return fmt.Errorf("error occurred while parsing JWT expires")
+	}
+	jwtRefreshExpiresMinute, err := strconv.ParseInt(config.Config("JWT_REFRESH_EXPIRES_MINUTE"), 10, 64)
+	if err != nil {
+		log.Printf("error occurred while parsing JWT refresh expires")
+		return fmt.Errorf("error occurred while parsing JWT refresh expires")
+	}
+
+	accessToken, err := auth.GetAccessToken(id, time.Minute*time.Duration(jwtExpiresMinute))
+	if err != nil {
+		log.Printf("error occurred on creating access token: %v", err)
+		return fmt.Errorf("error occurred on creating access token: %v", err)
+	}
+	refreshToken, err := auth.GetRefreshToken(id, time.Minute*time.Duration(jwtRefreshExpiresMinute))
+	if err != nil {
+		log.Printf("error occurred on creating refresh token: %v", err)
+		return fmt.Errorf("error occurred on creating refresh token: %v", err)
+	}
+
+	ctx.Cookie(&fiber.Cookie{
+		Name:  "refresh_token",
+		Value: *refreshToken,
+		//Path:        "",
+		//Domain:      "",
+		MaxAge:      60 * 60 * 24 * 30,
+		Expires:     time.Now().Add(time.Hour * 24 * 30),
+		Secure:      true,
+		HTTPOnly:    true,
+		SameSite:    "none",
+		SessionOnly: false,
+	})
+
+	tokenResponse := &model.TokenResponse{
+		AccessToken: accessToken,
+	}
+
+	return ctx.Status(200).JSON(tokenResponse)
 }
 
 func Pong(ctx *fiber.Ctx) error {
