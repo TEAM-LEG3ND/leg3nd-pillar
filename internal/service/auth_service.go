@@ -63,6 +63,25 @@ func LoginWithGoogle(ctx *fiber.Ctx, code string) error {
 			Message: &message,
 			Token:   &tokenResponse,
 		})
+	} else if *account.Status == dto.AccountStatusDraft {
+		message := "Account is found but in draft status"
+		accessToken, err := GetAccessToken(*account.Id, time.Minute*30)
+		if err != nil {
+			message := "error occurred while creating access token"
+			log.Println(message, err)
+			return ctx.Status(fiber.StatusInternalServerError).JSON(dto.LoginErrorResponse{
+				Code:    dto.ErrorCodeLoginFailed,
+				Message: &message,
+			})
+		}
+
+		tokenResponse := dto.TokenResponse{AccessToken: accessToken}
+
+		return ctx.Status(fiber.StatusUnauthorized).JSON(dto.LoginErrorResponse{
+			Code:    dto.ErrorCodeNewUser,
+			Message: &message,
+			Token:   &tokenResponse,
+		})
 	}
 
 	jwtExpiresMinuteStr, err := config.GetEnv("JWT_EXPIRES_MINUTE")
