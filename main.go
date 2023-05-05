@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
-	"leg3nd-pillar/middleware"
-	"leg3nd-pillar/router"
+	"leg3nd-pillar/internal/middleware"
+	"leg3nd-pillar/internal/router"
 )
 
 func main() {
