@@ -36,7 +36,7 @@ func LoginWithGoogle(ctx *fiber.Ctx, code string) error {
 		message := "Cannot find account by email"
 		log.Println(message, err)
 
-		draftAccountId, err := CreateDraftAccount(user.Email, user.GivenName)
+		draftAccountId, err := CreateDraftAccount(user.Email, user.Name)
 		if err != nil {
 			message := "Create Draft Account failed"
 			log.Println(message, err)
