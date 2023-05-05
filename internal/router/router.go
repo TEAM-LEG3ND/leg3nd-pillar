@@ -29,4 +29,5 @@ func public(app *fiber.App) {
 
 func restricted(app *fiber.App) {
 	app.Post("/v1/signup", controller.CompleteSignUp)
+	app.Get("/v1/me", controller.GetMyAccountInfo)
 }

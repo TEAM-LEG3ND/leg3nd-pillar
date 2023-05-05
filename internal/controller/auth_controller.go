@@ -45,3 +45,26 @@ func CompleteSignUp(ctx *fiber.Ctx) error {
 
 	return service.CompleteSignUp(ctx, id, updateAccountRequestBody.Nickname)
 }
+
+func GetMyAccountInfo(ctx *fiber.Ctx) error {
+	draftUserToken := ctx.Locals("user").(*jwt.Token) // Parsed by middleware
+	claims := draftUserToken.Claims.(jwt.MapClaims)
+	sub := claims["sub"].(string)
+	id, err := strconv.ParseInt(sub, 10, 64)
+	if err != nil {
+		message := "error occurred while parsing sub string to int"
+		log.Println(message, err)
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": message,
+		})
+	}
+	accountById, err := service.GetAccountById(id)
+	if err != nil {
+		message := "error occurred while getting account by id"
+		log.Println(message, err)
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": message,
+		})
+	}
+	return ctx.Status(fiber.StatusOK).JSON(*accountById)
+}
