@@ -17,7 +17,7 @@ func CreateAccount(newAccountRequest *dto.CreateAccountRequest) (*int64, error) 
 	a := fiber.AcquireAgent()
 	req := a.Request()
 	req.Header.SetMethod(fiber.MethodPost)
-	req.SetRequestURI(*accountHost + "/v1")
+	req.SetRequestURI(*accountHost + "/internal/v1/account")
 	a.JSON(newAccountRequest)
 	if err := a.Parse(); err != nil {
 		return nil, err
@@ -45,7 +45,7 @@ func UpdateAccount(id int64, updateAccountRequestBody *dto.UpdateAccountRequestB
 	a := fiber.AcquireAgent()
 	req := a.Request()
 	req.Header.SetMethod(fiber.MethodPatch)
-	req.SetRequestURI(*accountHost + "/v1/" + strconv.FormatInt(id, 10))
+	req.SetRequestURI(*accountHost + "/internal/v1/account/" + strconv.FormatInt(id, 10))
 	a.JSON(updateAccountRequestBody)
 	if err := a.Parse(); err != nil {
 		return nil, err
@@ -73,7 +73,7 @@ func FindAccountById(id int64) (*dto.AccountResponse, error) {
 	a := fiber.AcquireAgent()
 	req := a.Request()
 	req.Header.SetMethod(fiber.MethodGet)
-	req.SetRequestURI(*accountHost + "/v1/" + strconv.FormatInt(id, 10))
+	req.SetRequestURI(*accountHost + "/internal/v1/account/" + strconv.FormatInt(id, 10))
 	if err := a.Parse(); err != nil {
 		return nil, err
 	}
@@ -100,7 +100,7 @@ func FindAccountByEmail(email string) (*dto.AccountResponse, error) {
 	a := fiber.AcquireAgent()
 	req := a.Request()
 	req.Header.SetMethod(fiber.MethodGet)
-	req.SetRequestURI(*accountHost + "/v1/email/" + email)
+	req.SetRequestURI(*accountHost + "/internal/v1/account/email/" + email)
 	if err := a.Parse(); err != nil {
 		return nil, err
 	}
