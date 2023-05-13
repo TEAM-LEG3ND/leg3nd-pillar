@@ -81,5 +81,5 @@ func CheckToken(ctx *fiber.Ctx) error {
 			"message": message,
 		})
 	}
-	return ctx.Status(fiber.StatusOK).SendString(strconv.FormatInt(id, 10))
+	return ctx.Status(fiber.StatusOK).JSON(dto.CheckTokenResponse{AccountId: id})
 }
