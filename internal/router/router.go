@@ -5,6 +5,7 @@ import (
 	jwtware "github.com/gofiber/jwt/v3"
 	"leg3nd-pillar/internal/config"
 	"leg3nd-pillar/internal/controller"
+	"leg3nd-pillar/internal/middleware"
 	"log"
 )
 
@@ -29,5 +30,10 @@ func public(app *fiber.App) {
 
 func restricted(app *fiber.App) {
 	app.Post("/v1/signup", controller.CompleteSignUp)
+	// TODO: move to agora after api gateway setup
 	app.Get("/v1/me", controller.GetMyAccountInfo)
+
+	gateway := app.Group("/gateway")
+	gateway.Use(middleware.NewGatewayCheck())
+	gateway.Get("/v1/token")
 }
