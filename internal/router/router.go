@@ -35,5 +35,5 @@ func restricted(app *fiber.App) {
 
 	gateway := app.Group("/gateway")
 	gateway.Use(middleware.NewGatewayCheck())
-	gateway.Get("/v1/token")
+	gateway.Get("/v1/token", controller.CheckToken)
 }
