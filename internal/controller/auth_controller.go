@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"encoding/json"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
 	"leg3nd-pillar/internal/dto"
@@ -81,5 +82,14 @@ func CheckToken(ctx *fiber.Ctx) error {
 			"message": message,
 		})
 	}
-	return ctx.Status(fiber.StatusOK).JSON(dto.CheckTokenResponse{AccountId: id})
+	marshaledJson, err := json.Marshal(dto.CheckTokenResponse{AccountId: id})
+	if err != nil {
+		message := "error occurred while marshalling check token response dto"
+		log.Println(message, err)
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": message,
+		})
+	}
+	ctx.Set("X-Request-Account", string(marshaledJson))
+	return ctx.SendStatus(fiber.StatusOK)
 }
