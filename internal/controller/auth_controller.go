@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"encoding/json"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
 	"leg3nd-pillar/internal/dto"
@@ -67,4 +68,28 @@ func GetMyAccountInfo(ctx *fiber.Ctx) error {
 		})
 	}
 	return ctx.Status(fiber.StatusOK).JSON(*accountById)
+}
+
+func CheckToken(ctx *fiber.Ctx) error {
+	userToken := ctx.Locals("user").(*jwt.Token)
+	claims := userToken.Claims.(jwt.MapClaims)
+	sub := claims["sub"].(string)
+	id, err := strconv.ParseInt(sub, 10, 64)
+	if err != nil {
+		message := "error occurred while parsing sub string to int"
+		log.Println(message, err)
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": message,
+		})
+	}
+	marshaledJson, err := json.Marshal(dto.CheckTokenResponse{AccountId: id})
+	if err != nil {
+		message := "error occurred while marshalling check token response dto"
+		log.Println(message, err)
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": message,
+		})
+	}
+	ctx.Set("X-Request-Account", string(marshaledJson))
+	return ctx.SendStatus(fiber.StatusOK)
 }
