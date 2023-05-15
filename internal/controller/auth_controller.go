@@ -91,5 +91,7 @@ func CheckToken(ctx *fiber.Ctx) error {
 		})
 	}
 	ctx.Set("X-Request-Account", string(marshaledJson))
+	// TODO: Need to set new access token with refresh token when token is expired
+	ctx.Set("Access-Token", "new token when access token is expired and refresh token is provided")
 	return ctx.SendStatus(fiber.StatusOK)
 }
