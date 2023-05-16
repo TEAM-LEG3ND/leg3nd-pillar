@@ -152,11 +152,9 @@ func LoginWithGoogle(ctx *fiber.Ctx, code string) error {
 		SessionOnly: false,
 	})
 
-	tokenResponse := &dto.TokenResponse{
-		AccessToken: accessToken,
-	}
+	ctx.Set("Authorization", "Bearer "+*accessToken)
 
-	return ctx.Status(fiber.StatusOK).JSON(tokenResponse)
+	return ctx.SendStatus(fiber.StatusOK)
 }
 
 func CompleteSignUp(ctx *fiber.Ctx, accountId int64, nickname string) error {
@@ -235,9 +233,7 @@ func CompleteSignUp(ctx *fiber.Ctx, accountId int64, nickname string) error {
 		SessionOnly: false,
 	})
 
-	tokenResponse := &dto.TokenResponse{
-		AccessToken: accessToken,
-	}
+	ctx.Set("Authorization", "Bearer "+*accessToken)
 
-	return ctx.Status(fiber.StatusOK).JSON(tokenResponse)
+	return ctx.SendStatus(fiber.StatusOK)
 }
