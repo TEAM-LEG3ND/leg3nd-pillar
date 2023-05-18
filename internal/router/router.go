@@ -25,7 +25,7 @@ func Routes(app *fiber.App) {
 func public(app *fiber.App) {
 	app.Get("/ping", controller.Pong)
 	app.Post("/v1/login/google", controller.LoginWithGoogle)
-
+	app.Get("/v1/refresh", controller.RefreshToken)
 }
 
 func restricted(app *fiber.App) {
