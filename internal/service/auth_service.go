@@ -1,7 +1,9 @@
 package service
 
 import (
+	"fmt"
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v4"
 	"leg3nd-pillar/internal/client"
 	"leg3nd-pillar/internal/config"
 	"leg3nd-pillar/internal/dto"
@@ -236,4 +238,60 @@ func CompleteSignUp(ctx *fiber.Ctx, accountId int64, nickname string) error {
 	ctx.Set("Authorization", "Bearer "+*accessToken)
 
 	return ctx.SendStatus(fiber.StatusOK)
+}
+
+// RefreshToken returns refreshed newAccessToken, newRefreshToken, error.
+func RefreshToken(refreshToken string) (*string, *string, error) {
+	token, err := jwt.Parse(refreshToken, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			message := "error occurred while verifying refresh token"
+			return nil, fmt.Errorf(message)
+		}
+		jwtSecret, err := config.GetEnv("JWT_SECRET")
+		if err != nil {
+			log.Fatalln("error occurred while parsing jwt secret env", err)
+			return nil, err
+		}
+		return []byte(*jwtSecret), nil
+	})
+	if err != nil {
+		return nil, nil, fmt.Errorf("error occurred while parsing refresh token: %v", err)
+	}
+	if token.Valid {
+		claims := token.Claims.(jwt.MapClaims)
+		sub := claims["sub"].(string)
+		id, err := strconv.ParseInt(sub, 10, 64)
+		if err != nil {
+			return nil, nil, fmt.Errorf("error occurred while parsing sub string to int: %v", err)
+		}
+		accountById, err := GetAccountById(id)
+		if err != nil {
+			return nil, nil, fmt.Errorf("error occurred while getting account by id: %v", err)
+		}
+		jwtExpiresMinuteStr, err := config.GetEnv("JWT_EXPIRES_MINUTE")
+		if err != nil {
+			return nil, nil, fmt.Errorf("error occurred while parsing JWT expires: %v", err)
+		}
+		jwtExpiresMinute, err := strconv.ParseInt(*jwtExpiresMinuteStr, 10, 64)
+		if err != nil {
+			return nil, nil, fmt.Errorf("error occurred while parsing JWT expires: %v", err)
+		}
+		jwtRefreshExpiresMinuteStr, err := config.GetEnv("JWT_REFRESH_EXPIRES_MINUTE")
+		if err != nil {
+			return nil, nil, fmt.Errorf("error occurred while parsing JWT refresh expires: %v", err)
+		}
+		jwtRefreshExpiresMinute, err := strconv.ParseInt(*jwtRefreshExpiresMinuteStr, 10, 64)
+		if err != nil {
+			return nil, nil, fmt.Errorf("error occurred while parsing JWT refresh expires: %v", err)
+		}
+		newAccessToken, err := GetAccessToken(*accountById.Id, time.Minute*time.Duration(jwtExpiresMinute))
+		newRefreshToken, err := GetRefreshToken(*accountById.Id, time.Minute*time.Duration(jwtRefreshExpiresMinute))
+		if err != nil {
+			return nil, nil, fmt.Errorf("error occurred while creating jwt refresh token: %v", err)
+		}
+
+		return newAccessToken, newRefreshToken, nil
+	} else {
+		return nil, nil, fmt.Errorf("error occurred on token validation")
+	}
 }
