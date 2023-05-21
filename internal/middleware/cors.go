@@ -11,5 +11,6 @@ func Cors() fiber.Handler {
 		AllowOrigins:     "https://google-login-demo.vercel.app",
 		AllowCredentials: true,
 		AllowMethods:     "GET,POST,HEAD,PUT,DELETE,PATCH,OPTIONS",
+		ExposeHeaders:    "*",
 	})
 }
