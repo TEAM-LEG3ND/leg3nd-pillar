@@ -3,7 +3,7 @@ name: ci-dev
 on:
   push:
     branches:
-      - 'main'
+      - 'develop'
 jobs:
   docker-build-and-push:
     environment: dev
