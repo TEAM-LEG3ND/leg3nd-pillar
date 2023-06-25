@@ -58,12 +58,11 @@ func LoginWithGoogle(ctx *fiber.Ctx, code string) error {
 			})
 		}
 
-		tokenResponse := dto.TokenResponse{AccessToken: accessToken}
+		ctx.Set("Authorization", "Bearer "+*accessToken)
 
 		return ctx.Status(fiber.StatusUnauthorized).JSON(dto.LoginErrorResponse{
 			Code:    dto.ErrorCodeNewUser,
 			Message: &message,
-			Token:   &tokenResponse,
 		})
 	} else if *account.Status == dto.AccountStatusDraft {
 		message := "Account is found but in draft status"
@@ -77,12 +76,11 @@ func LoginWithGoogle(ctx *fiber.Ctx, code string) error {
 			})
 		}
 
-		tokenResponse := dto.TokenResponse{AccessToken: accessToken}
+		ctx.Set("Authorization", "Bearer "+*accessToken)
 
 		return ctx.Status(fiber.StatusUnauthorized).JSON(dto.LoginErrorResponse{
 			Code:    dto.ErrorCodeNewUser,
 			Message: &message,
-			Token:   &tokenResponse,
 		})
 	}
 
