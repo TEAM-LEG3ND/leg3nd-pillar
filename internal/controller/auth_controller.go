@@ -20,7 +20,6 @@ func LoginWithGoogle(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusBadRequest).JSON(dto.LoginErrorResponse{
 			Code:    dto.ErrorCodeLoginFailed,
 			Message: &errorMessage,
-			Token:   nil,
 		})
 	}
 	return service.LoginWithGoogle(ctx, req.Code)

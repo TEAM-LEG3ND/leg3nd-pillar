@@ -12,7 +12,6 @@ func (ec ErrorCode) String() string {
 }
 
 type LoginErrorResponse struct {
-	Code    ErrorCode      `json:"error_code"`
-	Message *string        `json:"message"`
-	Token   *TokenResponse `json:"token"`
+	Code    ErrorCode `json:"error_code"`
+	Message *string   `json:"message"`
 }
