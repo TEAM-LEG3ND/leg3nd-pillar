@@ -5,7 +5,7 @@ val koin_version = "3.4.2"
 val koin_ktor_version = "3.4.1"
 
 plugins {
-    val kotlinVersion = "1.8.22"
+    val kotlinVersion = "1.9.0"
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.serialization") version kotlinVersion
     id("io.ktor.plugin") version "2.3.2"
