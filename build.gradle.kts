@@ -3,6 +3,7 @@ val kotlin_version: String by project
 val logback_version: String by project
 val koin_version = "3.4.2"
 val koin_ktor_version = "3.4.1"
+val koin_ksp_version = "1.2.2"
 
 plugins {
     val kotlinVersion = "1.9.0"
@@ -10,6 +11,7 @@ plugins {
     kotlin("plugin.serialization") version kotlinVersion
     id("io.ktor.plugin") version "2.3.2"
     id("org.jlleitschuh.gradle.ktlint") version "11.5.0"
+    id("com.google.devtools.ksp") version "1.9.0-1.0.11"
 }
 
 group = "com.leg3nd"
@@ -44,6 +46,13 @@ dependencies {
     implementation("io.insert-koin:koin-ktor:$koin_ktor_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("io.insert-koin:koin-logger-slf4j:$koin_ktor_version")
+    implementation("io.insert-koin:koin-annotations:$koin_ksp_version")
+    ksp("io.insert-koin:koin-ksp-compiler:$koin_ksp_version")
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+}
+
+// KSP - To use generated sources
+sourceSets.main {
+    java.srcDirs("build/generated/ksp/main/kotlin")
 }
