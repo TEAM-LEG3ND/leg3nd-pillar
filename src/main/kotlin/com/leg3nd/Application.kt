@@ -1,5 +1,6 @@
 package com.leg3nd
 
+import com.leg3nd.plugins.KoinModule
 import com.leg3nd.plugins.configureHTTP
 import com.leg3nd.plugins.configureRouting
 import com.leg3nd.plugins.configureSecurity
@@ -9,6 +10,7 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.contentnegotiation.*
 import org.koin.dsl.module
+import org.koin.ksp.generated.module
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
 
@@ -23,13 +25,9 @@ fun Application.module() {
     }
     install(Koin) {
         slf4jLogger()
-        modules(appModule)
+        modules(KoinModule().module)
     }
     configureHTTP()
     configureSecurity()
     configureRouting()
-}
-
-val appModule = module {
-
 }
