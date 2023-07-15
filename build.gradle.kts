@@ -14,6 +14,9 @@ plugins {
     id("com.google.devtools.ksp") version "1.9.0-1.0.11"
 }
 
+// Use KSP Plugin
+apply(plugin = "com.google.devtools.ksp")
+
 group = "com.leg3nd"
 version = "0.0.1"
 application {
@@ -28,7 +31,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.insert-koin:koin-core:$koin_version")
+    implementation("io.insert-koin:koin-core:$koin_version")
     implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-host-common-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-status-pages-jvm:$ktor_version")
