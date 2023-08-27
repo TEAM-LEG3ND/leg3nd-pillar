@@ -8,5 +8,5 @@ import (
 func Pong(ctx *fiber.Ctx) error {
 	headers := ctx.GetReqHeaders()
 	log.Println(headers)
-	return ctx.Status(fiber.StatusOK).SendString("pong, " + headers["x-account-id"])
+	return ctx.Status(fiber.StatusOK).SendString("pong, " + headers["X-Account-Id"])
 }
